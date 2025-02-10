@@ -41,4 +41,23 @@ gapstat <- clusGap(dat6D_std, FUN = kmeans, K.max = 25)
 fviz_gap_stat(gapstat)
 
 
+df <- read.csv("T_cell_fluorescent_size.csv")
+fluorescent_signal <- df[,c(7,8,9,10,11,12)]
+colnames(fluorescent_signal) <- c("CD3", "CD35", "CD4", "CD7", "CD8","CD27")
+
+random_index <- sample(1:(dim(fluorescent_signal)[1]), 2000)
+fluorescent_signal_downsampled <- fluorescent_signal[random_index,]
+fluorescent_signal_downsampled
+
+
+fluorescent_signal_downsampled_arcsinh <- asinh(fluorescent_signal_downsampled)
+
+gapstat <- clusGap(scale(fluorescent_signal_downsampled), FUN = kmeans, K.max = 10)
+fviz_gap_stat(gapstat)
+
+
+gapstat_arcsinh <- clusGap(scale(fluorescent_signal_downsampled_arcsinh), FUN = kmeans, K.max = 10)
+fviz_gap_stat(gapstat_arcsinh)
+
+# Our k-means result showed inconsistent number of clusters detected with different downsampled dataset. A different approach must be tried.
 
