@@ -39,4 +39,31 @@ for(colname in colnames(fluorescent_signal_downsampled)){
   
 }
 
+# More testing on the original dataset.
+
+library(dplyr)
+library(ggplot2)
+
+df <- read.csv("T_cell_fluorescent_size.csv")
+
+fluorescent_signal <- df[,seq(7,12,1)]
+random_index <- sample(1:(dim(df)[1]), 2000)
+downsampled_fluorescent <- fluorescent_signal[random_index,]
+
+colnames(downsampled_fluorescent) <- c("CD3", "CD35", "CD4", "CD7", "CD8","CD27")
+
+ggplot(downsampled_fluorescent, aes(x = CD35)) + geom_histogram(binwidth = 100) + xlim(range(-100, 10000))
+ggplot(downsampled_fluorescent, aes(x = CD7)) + geom_histogram(binwidth = 100) + xlim(range(-100, 10000))
+
+just_cd35_cd4 <- downsampled_fluorescent[,c("CD35","CD7")]
+just_cd35_cd4 <- filter(just_cd35_cd4, CD35 > 0 &CD7 >0 )
+
+# Try arcsinh and log transformation to plot pair plot to see the relationship.
+
+just_cd35_cd4_asinh <- asinh(just_cd35_cd4)
+just_cd35_cd4_log <- log(just_cd35_cd4)
+plot(just_cd35_cd4_asinh$CD35, just_cd35_cd4_asinh$CD4)
+
+
+
 
